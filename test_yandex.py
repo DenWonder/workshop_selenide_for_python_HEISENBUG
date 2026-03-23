@@ -1,26 +1,25 @@
 from time import sleep
 
-from selenium.webdriver.chrome import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 
-import selenide as browser
-browser.driver = webdriver.Chrome(ChromeDriverManager().install())
+import my_selenide as browser
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support import expected_conditions as condition
+
+browser.driver = webdriver.Chrome(
+    service=Service(ChromeDriverManager().install()))
+
+browser.timeout = 5
 
 browser.visit("https://ya.ru/")
 sleep(3)
 
-browser.driver.find_element(By.CSS_SELECTOR, "#gdpr-popup-v3-button-all").click()
+cookies_popup_accept_button = browser.element('#gdpr-popup-v3-button-all')
+cookies_popup_accept_button.click()
 sleep(3)
 
-
-browser.Element('[name="text"]').should_be_blank()
-
-browser.driver.find_element(By.NAME, "text").click()
-browser.driver.find_element(By.NAME, "text").send_keys("Selene" + Keys.ENTER)
-
+query = browser.element('[name="text"]')
+query.should_be_blank()
+query.set_value('yashaka selene').press_enter()
 sleep(5)
-
-
-
